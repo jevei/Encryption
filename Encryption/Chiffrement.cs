@@ -9,10 +9,21 @@ namespace Encryption
         {
             string messageTranspose = Transpose(message, cle.Replace(" ", ""));
             byte[] blocClair = Encoding.ASCII.GetBytes(messageTranspose);
-            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, 43 = 110101. \n");
+            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, + donne 110101. \n");
             string VI = Console.ReadLine();
-
-            throw new NotImplementedException();
+            byte[] byteVI = Encoding.ASCII.GetBytes(VI);
+            for (int i = 0; i != blocClair.Length; i++)
+            {
+                if (i == 0)
+                {
+                    blocClair[i] ^= byteVI[i];
+                }
+                else
+                {
+                    blocClair[i] ^= blocClair[i - 1];
+                }
+            }
+            return Encoding.ASCII.GetString(blocClair);
         }
 
         private static string Transpose(string message, string v)
@@ -62,7 +73,7 @@ namespace Encryption
 
         internal static string Dechiffrer(string message, string cle)
         {
-            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, 43 = 110101. \n");
+            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, + donne 110101. \n");
             string VI = Console.ReadLine();
             throw new NotImplementedException();
         }
