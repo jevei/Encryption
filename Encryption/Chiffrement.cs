@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Encryption
 {
@@ -7,6 +8,10 @@ namespace Encryption
         internal static string Chiffrer(string message, string cle)
         {
             string messageTranspose = Transpose(message, cle.Replace(" ", ""));
+            byte[] blocClair = Encoding.ASCII.GetBytes(messageTranspose);
+            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, 43 = 110101. \n");
+            string VI = Console.ReadLine();
+
             throw new NotImplementedException();
         }
 
@@ -32,10 +37,6 @@ namespace Encryption
                     {
                         transposed[i, j] = message[compteur];
                     }
-                    /*else
-                    {
-                        transposed[i, j] = '^';
-                    }*/
                     compteur++;
                 }
             }
@@ -56,11 +57,13 @@ namespace Encryption
                     result += temp[i, j];
                 }
             }
-            return result;
+            return result.Replace("\0", "");
         }
 
         internal static string Dechiffrer(string message, string cle)
         {
+            Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, 43 = 110101. \n");
+            string VI = Console.ReadLine();
             throw new NotImplementedException();
         }
     }
