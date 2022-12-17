@@ -25,29 +25,20 @@ namespace Encryption
                     blocClair[i] ^= blocClair[i - 1];
                 }
             }
-            char[] test = Encoding.ASCII.GetChars(blocClair);
-            string test2 = "";
-            //Console.WriteLine("N*Gg\u0014g\be\fx\u0016x\rl\u001d=I=\u001dx\u0019|\\/Ll\u0018k\u0002c\u0010x\u001do\u001d~^a\u0012-H:N;Op");
-            //Console.WriteLine("")
-            foreach (char c in test)
-            {
-                test2 += c;
-            }
-            var test3 = test2.Length;
             return Encoding.ASCII.GetString(blocClair);
         }
 
         private static string Transpose(string message, string v)
         {
             int col = v.Length;
-            int row = message.Length % v.Length;
+            int row = message.Length % col;
             if (row != 0)
             {
-                row = message.Length / v.Length + 1;
+                row = message.Length / col + 1;
             }
             else
             {
-                row = message.Length / v.Length;
+                row = message.Length / col;
             }
             char[,] transposed = new char[row, col];
             int compteur = 0;
@@ -84,7 +75,6 @@ namespace Encryption
 
         internal static string Dechiffrer(string message, string cle)
         {
-            message = "N*Gg\u0014g\be\fx\u0016x\rl\u001d=I=\u001dx\u0019|\\/Ll\u0018k\u0002c\u0010x\u001do\u001d~^;H-H:N;O*";
             Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, + donne 110101. \n");
             string VI = Console.ReadLine();
             byte[] blocClair = Encoding.ASCII.GetBytes(message);
@@ -105,9 +95,81 @@ namespace Encryption
             return TransposeInverse(Encoding.ASCII.GetString(blocClair), cle.Replace(" ", ""));
         }
 
-        private static string TransposeInverse(string v1, string v2)
+        private static string TransposeInverse(string message, string v)
         {
-            throw new NotImplementedException();
+            int col = v.Length;
+            int row = message.Length % col;
+            if (row != 0)
+            {
+                row = message.Length / col + 1;
+            }
+            else
+            {
+                row = message.Length / col;
+            }
+            char[,] transposed = new char[col, row];
+            int compteur = 0;
+            for (int i = 0; i != col; i++)
+            {
+                for (int j = 0; j != row; j++)
+                {
+                    if (compteur < message.Length)
+                    {
+                        transposed[i, j] = message[compteur];
+                    }
+                    compteur++;
+                }
+            }
+            int caseVides = 0;
+            foreach (char c in transposed)
+            {
+                if (c == '\0')
+                {
+                    caseVides++;
+                }
+            }
+            for (int i = col; i != col - caseVides; i--)
+            {
+                int colDesire = int.Parse(v[i - 1].ToString());
+                int positionDepartRow = row - 1;
+                int positionDepartCol = colDesire - 1;
+                char caractereRemplacer = '\0';
+                for (int x = positionDepartCol; x != col; x++)
+                {
+                    for (int y = 0; y != row; y++)
+                    {
+                        if (x == positionDepartCol && y == positionDepartRow)
+                        {
+                            caractereRemplacer = transposed[x, y];
+                            transposed[x, y] = '\0';
+                        }
+                        else if (x > positionDepartCol)
+                        {
+                            char temp = transposed[x, y];
+                            transposed[x, y] = caractereRemplacer;
+                            caractereRemplacer = temp;
+                        }
+                    }
+                }
+            }
+            char[,] result = new char[col, row];
+            for (int i = 0; i != col; i++)
+            {
+                int position = int.Parse(v[i].ToString()) - 1;
+                for (int j = 0; j != row; j++)
+                {
+                    result[i, j] = transposed[position, j];
+                }
+            }
+            string retour = "";
+            for (int i = 0; i != result.GetLength(1); i++)
+            {
+                for (int j = 0; j != result.GetLength(0); j++)
+                {
+                    retour += result[j, i];
+                }
+            }
+            return retour.Replace("\0", "");
         }
 
         private static string RemoveAccents(string input)
