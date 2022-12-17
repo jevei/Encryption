@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Encryption
@@ -7,8 +9,8 @@ namespace Encryption
     {
         internal static string Chiffrer(string message, string cle)
         {
-            string messageTranspose = Transpose(message, cle.Replace(" ", ""));
-            byte[] blocClair = Encoding.ASCII.GetBytes(messageTranspose);
+            message = RemoveAccents(message);
+            byte[] blocClair = Encoding.ASCII.GetBytes(Transpose(message, cle.Replace(" ", "")));
             Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, + donne 110101. \n");
             string VI = Console.ReadLine();
             byte[] byteVI = Encoding.ASCII.GetBytes(VI);
@@ -23,6 +25,15 @@ namespace Encryption
                     blocClair[i] ^= blocClair[i - 1];
                 }
             }
+            char[] test = Encoding.ASCII.GetChars(blocClair);
+            string test2 = "";
+            //Console.WriteLine("N*Gg\u0014g\be\fx\u0016x\rl\u001d=I=\u001dx\u0019|\\/Ll\u0018k\u0002c\u0010x\u001do\u001d~^a\u0012-H:N;Op");
+            //Console.WriteLine("")
+            foreach (char c in test)
+            {
+                test2 += c;
+            }
+            var test3 = test2.Length;
             return Encoding.ASCII.GetString(blocClair);
         }
 
@@ -73,9 +84,35 @@ namespace Encryption
 
         internal static string Dechiffrer(string message, string cle)
         {
+            message = "N*Gg\u0014g\be\fx\u0016x\rl\u001d=I=\u001dx\u0019|\\/Ll\u0018k\u0002c\u0010x\u001do\u001d~^;H-H:N;O*";
             Console.WriteLine("Veuillez déterminer un vecteur d'initialisation par le caractère ASCII représentant la valeur désiré, par exemple, + donne 110101. \n");
             string VI = Console.ReadLine();
+            byte[] blocClair = Encoding.ASCII.GetBytes(message);
+            byte[] blocChiffre = Encoding.ASCII.GetBytes(message);
+            byte[] byteVI = Encoding.ASCII.GetBytes(VI);
+            for (int i = 0; i != blocChiffre.Length; i++)
+            {
+                if (i == 0)
+                {
+                    blocClair[i] ^= byteVI[i];
+                }
+                else
+                {
+                    blocClair[i] ^= blocChiffre[i - 1];
+                }
+            }
+            Console.WriteLine(Encoding.ASCII.GetString(blocClair));
+            return TransposeInverse(Encoding.ASCII.GetString(blocClair), cle.Replace(" ", ""));
+        }
+
+        private static string TransposeInverse(string v1, string v2)
+        {
             throw new NotImplementedException();
+        }
+
+        private static string RemoveAccents(string input)
+        {
+            return new string(input.Normalize(System.Text.NormalizationForm.FormD).ToCharArray().Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray());
         }
     }
 }
