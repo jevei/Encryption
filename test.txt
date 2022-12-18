@@ -1,0 +1,15 @@
+Un exemple qui fonctionne avec une clé de transposition quelconque;
+
+
+
+Un second exemple qui fonctionne avec une autre clé de transposition avec une quantité différente de nombres;
+
+
+
+Un troisième exemple pour lequel la clé tentée pour le déchiffrement est différente de celle utilisée pour le chiffrement;
+
+
+
+Un quatrième exemple pour lequel le VI utilisé pour déchiffrer est différent que celui pour chiffrer.
+
+
